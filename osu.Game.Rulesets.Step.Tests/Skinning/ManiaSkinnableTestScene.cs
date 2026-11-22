@@ -1,0 +1,54 @@
+﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using NUnit.Framework;
+
+namespace osu.Game.Rulesets.Step.Tests.Skinning
+{
+    /// <summary>
+    /// A test scene for skinnable mania components.
+    /// </summary>
+    public abstract partial class ManiaSkinnableTestScene : SkinnableTestScene
+    {
+        [Cached(Type = typeof(IScrollingInfo))]
+        protected readonly TestScrollingInfo ScrollingInfo = new TestScrollingInfo();
+
+        [Cached]
+        private readonly StageDefinition stage = new StageDefinition(4);
+
+        protected override Ruleset CreateRulesetForSkinProvider() => new StepRuleset();
+
+        protected ManiaSkinnableTestScene()
+        {
+            ScrollingInfo.Direction.Value = ScrollingDirection.Down;
+
+            Add(new Box
+            {
+                RelativeSizeAxes = Axes.Both,
+                Colour = Color4.SlateGray.Opacity(0.2f),
+                Depth = 1
+            });
+        }
+
+        [Test]
+        public void TestScrollingDown()
+        {
+            AddStep("change direction to down", () => ScrollingInfo.Direction.Value = ScrollingDirection.Down);
+        }
+
+        [Test]
+        public void TestScrollingUp()
+        {
+            AddStep("change direction to up", () => ScrollingInfo.Direction.Value = ScrollingDirection.Up);
+        }
+
+        protected class TestScrollingInfo : IScrollingInfo
+        {
+            public readonly Bindable<ScrollingDirection> Direction = new Bindable<ScrollingDirection>();
+
+            IBindable<ScrollingDirection> IScrollingInfo.Direction => Direction;
+            IBindable<double> IScrollingInfo.TimeRange { get; } = new Bindable<double>(5000);
+            IBindable<IScrollAlgorithm> IScrollingInfo.Algorithm { get; } = new Bindable<IScrollAlgorithm>(new ConstantScrollAlgorithm());
+        }
+    }
+}

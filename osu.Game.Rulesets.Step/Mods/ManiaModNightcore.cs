@@ -1,0 +1,12 @@
+﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Step.Objects;
+
+namespace osu.Game.Rulesets.Step.Mods
+{
+    public class ManiaModNightcore : ModNightcore<ManiaHitObject>, IManiaRateAdjustmentMod
+    {
+    }
+}
