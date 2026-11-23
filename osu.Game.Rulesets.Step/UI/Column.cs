@@ -56,7 +56,7 @@ namespace osu.Game.Rulesets.Step.UI
         /// </summary>
         public readonly bool IsSpecial;
 
-        public readonly Bindable<Color4> AccentColour = new Bindable<Color4>(Color4.Black);
+        public readonly Bindable<Color4> AccentColour = new(Color4.Black);
 
         private IBindable<bool> touchOverlay = null!;
 
@@ -117,7 +117,9 @@ namespace osu.Game.Rulesets.Step.UI
             TopLevelContainer.Add(HitObjectArea.Explosions.CreateProxy());
 
             RegisterPool<Note, DrawableNote>(10, 50);
+            RegisterPool<MineNote, DrawableMineNote>(10, 50);
             RegisterPool<HoldNote, DrawableHoldNote>(10, 50);
+            RegisterPool<RollNote, DrawableRollNote>(10, 50);
             RegisterPool<HeadNote, DrawableHoldNoteHead>(10, 50);
             RegisterPool<TailNote, DrawableHoldNoteTail>(10, 50);
             RegisterPool<HoldNoteBody, DrawableHoldNoteBody>(10, 50);
@@ -169,8 +171,10 @@ namespace osu.Game.Rulesets.Step.UI
 
             DrawableManiaHitObject maniaObject = (DrawableManiaHitObject)drawableHitObject;
 
-            maniaObject.AccentColour.BindTo(AccentColour);
-            maniaObject.CheckHittable = hitPolicy.IsHittable;
+            if (maniaObject is not DrawableNote or DrawableHoldNoteTail or DrawableMineNote)
+                maniaObject.AccentColour.BindTo(AccentColour);
+
+            maniaObject.CheckHittable = (hitObject, time) => hitObject is DrawableMineNote || hitPolicy.IsHittable(hitObject, time);
         }
 
         internal void OnNewResult(DrawableHitObject judgedObject, JudgementResult result)

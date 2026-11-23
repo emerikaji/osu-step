@@ -13,9 +13,9 @@ using osu.Game.Beatmaps;
 using osu.Game.Graphics;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Rulesets.Step.Configuration;
+using osu.Game.Rulesets.Step.Skinning;
 using osu.Game.Rulesets.Step.Skinning.Default;
 using osu.Game.Rulesets.UI.Scrolling;
-using osu.Game.Screens.Edit;
 using osu.Game.Skinning;
 using osuTK.Graphics;
 
@@ -31,8 +31,6 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
 
         [Resolved(canBeNull: true)]
         private IBeatmap beatmap { get; set; }
-
-        private readonly Bindable<bool> configTimingBasedNoteColouring = new Bindable<bool>();
 
         protected virtual ManiaSkinComponents Component => ManiaSkinComponents.Note;
 
@@ -52,8 +50,6 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         [BackgroundDependencyLoader(true)]
         private void load(ManiaRulesetConfigManager rulesetConfig)
         {
-            rulesetConfig?.BindWith(ManiaRulesetSetting.TimingBasedNoteColouring, configTimingBasedNoteColouring);
-
             AddInternal(headPiece = new SkinnableDrawable(new ManiaSkinComponentLookup(Component), _ => new DefaultNotePiece())
             {
                 RelativeSizeAxes = Axes.X,
@@ -65,7 +61,6 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         {
             base.LoadComplete();
 
-            configTimingBasedNoteColouring.BindValueChanged(_ => updateSnapColour());
             StartTimeBindable.BindValueChanged(_ => updateSnapColour(), true);
         }
 
@@ -125,11 +120,30 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
 
         private void updateSnapColour()
         {
-            if (beatmap == null || HitObject == null) return;
+            if (this is DrawableHoldNoteTail || this is DrawableMineNote)
+                return;
+
+            Colour = Color4.White;
+
+            if (beatmap == null || HitObject == null)
+                return;
 
             int snapDivisor = beatmap.ControlPointInfo.GetClosestBeatDivisor(HitObject.StartTime);
 
-            Colour = configTimingBasedNoteColouring.Value ? BindableBeatDivisor.GetColourFor(snapDivisor, colours) : Color4.White;
+            AccentColour.Value = CurrentSkin.GetConfig<BeatSnapColourLookup, Color4>(new BeatSnapColourLookup(snapDivisor))?.Value
+                                 ?? getStepManiaSnapColour(snapDivisor);
         }
+
+        private static Color4 getStepManiaSnapColour(int divisor) => divisor switch
+        {
+            1 => Color4.Red,
+            2 => Color4.Blue,
+            3 => Color4.Purple,
+            4 => Color4.Yellow,
+            6 => Color4.Pink,
+            8 => Color4.Orange,
+            12 or 16 => Color4.Cyan,
+            _ => Color4.Green
+        };
     }
 }

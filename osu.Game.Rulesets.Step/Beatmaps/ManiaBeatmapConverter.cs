@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using osu.Framework.Utils;
 using osu.Game.Beatmaps;
 using osu.Game.Beatmaps.Legacy;
 using osu.Game.Rulesets.Mods;
@@ -47,6 +48,11 @@ namespace osu.Game.Rulesets.Step.Beatmaps
         /// </summary>
         public readonly bool IsForCurrentRuleset;
 
+        /// <summary>
+        /// Static object cache to add new statistics.
+        /// </summary>
+        public static readonly Dictionary<string, (int Rolls, int Mines)> ObjectCountsByHash = new Dictionary<string, (int, int)>();
+
         // Internal for testing purposes
         internal readonly LegacyRandom Random;
 
@@ -57,12 +63,26 @@ namespace osu.Game.Rulesets.Step.Beatmaps
         {
         }
 
+        private static bool isManiaFormattedBeatmap(IBeatmap? beatmap)
+        {
+            if (beatmap?.HitObjects == null || beatmap.HitObjects.Count == 0)
+                return false;
+
+            foreach (var obj in beatmap.HitObjects)
+            {
+                if (obj is IHasPosition pos && !Precision.AlmostEquals(pos.Y, 192, 0.5f))
+                    return false;
+            }
+
+            return true;
+        }
+
         private ManiaBeatmapConverter(IBeatmap? beatmap, LegacyBeatmapConversionDifficultyInfo difficulty, Ruleset ruleset)
             : base(beatmap!, ruleset)
         {
-            IsForCurrentRuleset = difficulty.SourceRuleset.Equals(ruleset.RulesetInfo);
+            IsForCurrentRuleset = difficulty.SourceRuleset.Equals(ruleset.RulesetInfo) || isManiaFormattedBeatmap(beatmap);
             Random = new LegacyRandom((int)MathF.Round(difficulty.DrainRate + difficulty.CircleSize) * 20 + (int)(difficulty.OverallDifficulty * 41.2) + (int)MathF.Round(difficulty.ApproachRate));
-            TargetColumns = getColumnCount(difficulty);
+            TargetColumns = getColumnCount(difficulty, IsForCurrentRuleset);
 
             if (IsForCurrentRuleset && TargetColumns > StepRuleset.MAX_STAGE_KEYS)
             {
@@ -72,32 +92,12 @@ namespace osu.Game.Rulesets.Step.Beatmaps
                 Dual = true;
             }
 
-            static int getColumnCount(LegacyBeatmapConversionDifficultyInfo difficulty)
+            static int getColumnCount(LegacyBeatmapConversionDifficultyInfo difficulty, bool isForCurrentRuleset)
             {
+                if (!isForCurrentRuleset && difficulty.SourceRuleset.ShortName != StepRuleset.SHORT_NAME) return 4;
+
                 double roundedCircleSize = Math.Round(difficulty.CircleSize);
-
-                if (difficulty.SourceRuleset.ShortName == StepRuleset.SHORT_NAME)
-                    return (int)Math.Max(1, roundedCircleSize);
-
-                double roundedOverallDifficulty = Math.Round(difficulty.OverallDifficulty);
-
-                if (difficulty.TotalObjectCount > 0 && difficulty.EndTimeObjectCount >= 0)
-                {
-                    int countSliderOrSpinner = difficulty.EndTimeObjectCount;
-
-                    // In osu!stable, this division appears as if it happens on floats, but due to release-mode
-                    // optimisations, it actually ends up happening on doubles.
-                    double percentSpecialObjects = (double)countSliderOrSpinner / difficulty.TotalObjectCount;
-
-                    if (percentSpecialObjects < 0.2)
-                        return 7;
-                    if (percentSpecialObjects < 0.3 || roundedCircleSize >= 5)
-                        return roundedOverallDifficulty > 5 ? 7 : 6;
-                    if (percentSpecialObjects > 0.6)
-                        return roundedOverallDifficulty > 4 ? 5 : 4;
-                }
-
-                return Math.Max(4, Math.Min((int)roundedOverallDifficulty + 1, 7));
+                return (int)Math.Max(1, roundedCircleSize);
             }
         }
 
@@ -148,7 +148,7 @@ namespace osu.Game.Rulesets.Step.Beatmaps
                     break;
 
                 case IHasDuration:
-                    legacyType = LegacyHitObjectType.Hold;
+                    legacyType = IsForCurrentRuleset ? LegacyHitObjectType.Hold : LegacyHitObjectType.Spinner;
                     break;
 
                 default:
@@ -232,6 +232,124 @@ namespace osu.Game.Rulesets.Step.Beatmaps
                     yield return obj;
             }
         }
+
+        protected override Beatmap<ManiaHitObject> ConvertBeatmap(IBeatmap original, CancellationToken cancellationToken)
+        {
+            var converted = base.ConvertBeatmap(original, cancellationToken);
+
+            // Only inject pattern-based mines on Mode: 0 (osu!standard) converts
+            if (IsForCurrentRuleset || converted.HitObjects.Count == 0)
+                return converted;
+
+            var minesToAdd = new List<MineNote>();
+
+            // Track occupied intervals per column so mines never overlap notes or holds
+            var busyIntervals = new List<(double start, double end)>[TotalColumns];
+            for (int c = 0; c < TotalColumns; c++)
+                busyIntervals[c] = new List<(double, double)>();
+
+            foreach (var obj in converted.HitObjects)
+            {
+                double end = obj.GetEndTime();
+                busyIntervals[obj.Column].Add((obj.StartTime - 100, end + 100));
+            }
+
+            bool isColumnFree(int col, double time, double buffer = 95)
+            {
+                foreach (var (s, e) in busyIntervals[col])
+                {
+                    if (time >= s - buffer && time <= e + buffer)
+                        return false;
+                }
+
+                return true;
+            }
+
+            void tryAddMine(int col, double time)
+            {
+                if (!isColumnFree(col, time))
+                    return;
+
+                minesToAdd.Add(new MineNote
+                {
+                    StartTime = time,
+                    Column = col,
+                });
+
+                busyIntervals[col].Add((time - 90, time + 90));
+            }
+
+            // Group converted hit objects by StartTime
+            var groups = converted.HitObjects
+                                  .GroupBy(h => Math.Round(h.StartTime, 1))
+                                  .OrderBy(g => g.Key)
+                                  .ToList();
+
+            for (int i = 0; i < groups.Count; i++)
+            {
+                var group = groups[i].ToList();
+                double groupStart = group[0].StartTime;
+                double groupMaxEnd = group.Max(h => h.GetEndTime());
+
+                double prevGap = i > 0 ? groupStart - groups[i - 1].Max(h => h.GetEndTime()) : double.PositiveInfinity;
+                double nextGap = i < groups.Count - 1 ? groups[i + 1].First().StartTime - groupMaxEnd : double.PositiveInfinity;
+
+                // 1. Sudden Pause / Break Wall: dense phrase followed by a sudden >= 500ms pause
+                if (prevGap < 220 && nextGap >= 500 && nextGap < double.PositiveInfinity)
+                {
+                    double wallTime = groupMaxEnd + 130;
+                    for (int col = 0; col < TotalColumns; col++)
+                        tryAddMine(col, wallTime);
+
+                    continue;
+                }
+
+                // 2. Post-Hold Release Check: long hold (>= 350ms) followed by a gap >= 240ms
+                foreach (var hold in group.OfType<HoldNote>())
+                {
+                    if (hold is RollNote || hold.Duration < 350)
+                        continue;
+
+                    double nextNoteTime = i < groups.Count - 1 ? groups[i + 1].First().StartTime : double.PositiveInfinity;
+                    if (nextNoteTime - hold.EndTime >= 240)
+                        tryAddMine(hold.Column, hold.EndTime + 120);
+                }
+
+                // 3. Intense / Kiai Section Trip-Ups: 1-2 mines in free columns during fast sections
+                bool isKiai = original.ControlPointInfo.EffectPointAt(groupStart).KiaiMode;
+                bool isDense = prevGap < 160 && nextGap < 160;
+
+                if ((isKiai || isDense) && group.Count <= TotalColumns - 2 && Random.NextDouble() < 0.22)
+                {
+                    var freeCols = Enumerable.Range(0, TotalColumns)
+                                             .Where(c => isColumnFree(c, groupStart, 110))
+                                             .OrderBy(_ => Random.NextDouble())
+                                             .ToList();
+
+                    // Always leave at least 1-2 open lanes so the pattern stays playable
+                    int maxMines = Math.Min(freeCols.Count - 1, TotalColumns >= 4 && Random.NextDouble() < 0.25 ? 2 : 1);
+
+                    for (int m = 0; m < maxMines; m++)
+                        tryAddMine(freeCols[m], groupStart);
+                }
+            }
+
+            if (minesToAdd.Count > 0)
+            {
+                converted.HitObjects.AddRange(minesToAdd);
+                converted.HitObjects.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+            }
+
+            if (!string.IsNullOrEmpty(original.BeatmapInfo?.Hash))
+            {
+                int rolls = converted.HitObjects.OfType<RollNote>().Count();
+                int mines = converted.HitObjects.OfType<MineNote>().Count();
+                ObjectCountsByHash[original.BeatmapInfo.Hash] = (rolls, mines);
+            }
+
+            return converted;
+        }
+
 
         private readonly LimitedCapacityQueue<double> prevNoteTimes = new LimitedCapacityQueue<double>(max_notes_for_density);
         private double density = int.MaxValue;

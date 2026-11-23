@@ -411,6 +411,7 @@ namespace osu.Game.Rulesets.Step
                 HitResult.Meh,
                 HitResult.Miss,
 
+                HitResult.LargeBonus,
                 HitResult.IgnoreHit,
                 HitResult.ComboBreak,
                 HitResult.IgnoreMiss,
@@ -506,6 +507,25 @@ namespace osu.Game.Rulesets.Step
             yield return new RulesetBeatmapAttribute(SongSelectStrings.HPDrain, @"HP", originalDifficulty.DrainRate, adjustedDifficulty.DrainRate, 10)
             {
                 Description = SongSelectStrings.HPDrainDescription
+            };
+
+            int rollCount = 0;
+            int mineCount = 0;
+
+            if (!string.IsNullOrEmpty(beatmapInfo.Hash) && ManiaBeatmapConverter.ObjectCountsByHash.TryGetValue(beatmapInfo.Hash, out var counts))
+            {
+                rollCount = counts.Rolls;
+                mineCount = counts.Mines;
+            }
+
+            yield return new RulesetBeatmapAttribute("Rolls", @"RL", rollCount, rollCount, Math.Max(10, rollCount))
+            {
+                Description = "The number of roll notes in this beatmap."
+            };
+
+            yield return new RulesetBeatmapAttribute("Mines", @"MN", mineCount, mineCount, Math.Max(20, mineCount))
+            {
+                Description = "The number of mines in this beatmap."
             };
         }
 

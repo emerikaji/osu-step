@@ -1,7 +1,6 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System;
 using System.Linq;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
@@ -137,9 +136,6 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
         }
 
         private static readonly Color4 colour_special_column = new Color4(169, 106, 255, 255);
-
-        private const int total_colours = 6;
-
         private static readonly Color4 colour_yellow = new Color4(255, 197, 40, 255);
         private static readonly Color4 colour_orange = new Color4(252, 109, 1, 255);
         private static readonly Color4 colour_pink = new Color4(213, 35, 90, 255);
@@ -147,8 +143,22 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
         private static readonly Color4 colour_cyan = new Color4(72, 198, 255, 255);
         private static readonly Color4 colour_green = new Color4(100, 192, 92, 255);
 
+        private static Color4 getArgonSnapColour(int divisor) => divisor switch
+        {
+            1 => colour_pink,
+            2 => colour_cyan,
+            3 => colour_purple,
+            4 => colour_yellow,
+            6 => colour_special_column,
+            8 => colour_orange,
+            _ => colour_green,
+        };
+
         public override IBindable<TValue>? GetConfig<TLookup, TValue>(TLookup lookup)
         {
+            if (lookup is BeatSnapColourLookup snapLookup)
+                return SkinUtils.As<TValue>(new Bindable<Color4>(getArgonSnapColour(snapLookup.Divisor)));
+
             if (lookup is ManiaSkinConfigurationLookup maniaLookup)
             {
                 int columnIndex = maniaLookup.ColumnIndex ?? 0;
@@ -181,202 +191,6 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
             return base.GetConfig<TLookup, TValue>(lookup);
         }
 
-        private Color4 getColourForLayout(int columnIndex, StageDefinition stage)
-        {
-            // Account for cases like dual-stage (assume that all stages have the same column count for now).
-            columnIndex %= stage.Columns;
-
-            // For now, these are defined per column count as per https://user-images.githubusercontent.com/50823728/218038463-b450f46c-ef21-4551-b133-f866be59970c.png
-            // See https://github.com/ppy/osu/discussions/21996 for discussion.
-            switch (stage.Columns)
-            {
-                case 1:
-                    return colour_yellow;
-
-                case 2:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_green;
-
-                        case 1: return colour_cyan;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 3:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_green;
-
-                        case 1: return colour_special_column;
-
-                        case 2: return colour_cyan;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 4:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_yellow;
-
-                        case 1: return colour_orange;
-
-                        case 2: return colour_pink;
-
-                        case 3: return colour_purple;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 5:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_pink;
-
-                        case 1: return colour_orange;
-
-                        case 2: return colour_yellow;
-
-                        case 3: return colour_green;
-
-                        case 4: return colour_cyan;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 6:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_pink;
-
-                        case 1: return colour_orange;
-
-                        case 2: return colour_green;
-
-                        case 3: return colour_cyan;
-
-                        case 4: return colour_orange;
-
-                        case 5: return colour_pink;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 7:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_pink;
-
-                        case 1: return colour_orange;
-
-                        case 2: return colour_pink;
-
-                        case 3: return colour_special_column;
-
-                        case 4: return colour_pink;
-
-                        case 5: return colour_orange;
-
-                        case 6: return colour_pink;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 8:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_purple;
-
-                        case 1: return colour_pink;
-
-                        case 2: return colour_orange;
-
-                        case 3: return colour_green;
-
-                        case 4: return colour_cyan;
-
-                        case 5: return colour_orange;
-
-                        case 6: return colour_pink;
-
-                        case 7: return colour_purple;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 9:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_purple;
-
-                        case 1: return colour_pink;
-
-                        case 2: return colour_orange;
-
-                        case 3: return colour_yellow;
-
-                        case 4: return colour_special_column;
-
-                        case 5: return colour_yellow;
-
-                        case 6: return colour_orange;
-
-                        case 7: return colour_pink;
-
-                        case 8: return colour_purple;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-
-                case 10:
-                    switch (columnIndex)
-                    {
-                        case 0: return colour_purple;
-
-                        case 1: return colour_pink;
-
-                        case 2: return colour_orange;
-
-                        case 3: return colour_yellow;
-
-                        case 4: return colour_green;
-
-                        case 5: return colour_cyan;
-
-                        case 6: return colour_yellow;
-
-                        case 7: return colour_orange;
-
-                        case 8: return colour_pink;
-
-                        case 9: return colour_purple;
-
-                        default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-                    }
-            }
-
-            // fallback for unhandled scenarios
-
-            if (stage.IsSpecialColumn(columnIndex))
-                return colour_special_column;
-
-            switch (columnIndex % total_colours)
-            {
-                case 0: return colour_yellow;
-
-                case 1: return colour_orange;
-
-                case 2: return colour_pink;
-
-                case 3: return colour_purple;
-
-                case 4: return colour_cyan;
-
-                case 5: return colour_green;
-
-                default: throw new ArgumentOutOfRangeException(nameof(columnIndex));
-            }
-        }
+        private static Color4 getColourForLayout(int columnIndex, StageDefinition stage) => Color4.Gray;
     }
 }

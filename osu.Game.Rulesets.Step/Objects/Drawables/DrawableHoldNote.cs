@@ -36,7 +36,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         /// </summary>
         public IBindable<bool> IsHolding => isHolding;
 
-        private double? releaseTime;
+        protected double? ReleaseTime;
         private const double rehold_grace_period = 250; // ms
 
         private readonly Bindable<bool> isHolding = new Bindable<bool>();
@@ -67,7 +67,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         /// <summary>
         /// Contains the contents of the hold note that should be masked as the hold note is being pressed. Follows changes in the size of <see cref="sizingContainer"/>.
         /// </summary>
-        private Container maskingContainer;
+        protected Container MaskingContainer;
 
         private SkinnableDrawable bodyPiece;
 
@@ -93,7 +93,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
                     RelativeSizeAxes = Axes.Both,
                     Children = new Drawable[]
                     {
-                        maskingContainer = new Container
+                        MaskingContainer = new Container
                         {
                             RelativeSizeAxes = Axes.Both,
                             Child = maskedContents = new Container
@@ -139,7 +139,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         {
             base.OnApply();
 
-            releaseTime = null;
+            ReleaseTime = null;
             sizingContainer.Size = Vector2.One;
         }
 
@@ -217,7 +217,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
             // this matters because some skin implementations like legacy skin
             // insert drawables in the hierarchy that are not a child of this DHO
             // (see `LegacyBodyPiece` and related machinations with `lightContainer` being added at column level)
-            releaseTime = null;
+            ReleaseTime = null;
             isHolding.Value = Result.IsHolding(Time.Current);
             missingStartTime.Value = null;
             (bodyPiece.Drawable as IHoldNoteBody)?.Recycle();
@@ -236,11 +236,11 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
 
             isHolding.Value = Result.IsHolding(Time.Current);
 
-            if (releaseTime != null && !Body.AllJudged && Time.Current - releaseTime.Value > rehold_grace_period)
+            if (ReleaseTime != null && !Body.AllJudged && Time.Current - ReleaseTime.Value > rehold_grace_period)
             {
                 Body.TriggerResult(false);
                 Tail.UpdateResult();
-                releaseTime = null;
+                ReleaseTime = null;
             }
 
             // Pad the full size container so its contents (i.e. the masking container) reach under the tail.
@@ -253,7 +253,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
 
             // Pad the masking container to the starting position of the body piece (half-way under the head).
             // This is required to make the body start getting masked immediately as soon as the note is held.
-            maskingContainer.Padding = new MarginPadding
+            MaskingContainer.Padding = new MarginPadding
             {
                 Top = Direction.Value == ScrollingDirection.Up ? Head.Height / 2 : 0,
                 Bottom = Direction.Value == ScrollingDirection.Down ? Head.Height / 2 : 0,
@@ -313,7 +313,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
             Result.ReportHoldState(Time.Current, false);
         }
 
-        public bool OnPressed(KeyBindingPressEvent<ManiaAction> e)
+        public virtual bool OnPressed(KeyBindingPressEvent<ManiaAction> e)
         {
             if (AllJudged)
                 return false;
@@ -339,7 +339,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
             {
                 if (!Head.IsHit || Body.HasHoldBreak || isHolding.Value) return false;
 
-                releaseTime = null;
+                ReleaseTime = null;
                 Result.ReportHoldState(Time.Current, true);
                 return true;
             }
@@ -357,7 +357,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
             Result.ReportHoldState(Time.Current, true);
         }
 
-        public void OnReleased(KeyBindingReleaseEvent<ManiaAction> e)
+        public virtual void OnReleased(KeyBindingReleaseEvent<ManiaAction> e)
         {
             if (AllJudged)
                 return;
@@ -378,7 +378,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
                 Result.ReportHoldState(Time.Current, false);
 
                 if (!Body.AllJudged)
-                    releaseTime ??= Time.Current;
+                    ReleaseTime ??= Time.Current;
             }
         }
 

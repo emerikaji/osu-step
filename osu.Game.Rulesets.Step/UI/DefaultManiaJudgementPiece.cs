@@ -45,6 +45,7 @@ namespace osu.Game.Rulesets.Step.UI
             {
                 HitResult.LargeBonus => "OK!",
                 HitResult.IgnoreMiss => "NG!",
+                HitResult.ComboBreak => "BOOM!",
                 _ => JudgementText.Text
             };
         }
@@ -57,7 +58,7 @@ namespace osu.Game.Rulesets.Step.UI
                     this.FadeOutFromOne(800);
                     break;
 
-                case HitResult.Miss:
+                case HitResult.Miss or HitResult.ComboBreak:
                     this.ScaleTo(1.6f);
                     this.ScaleTo(1, 100, Easing.In);
 

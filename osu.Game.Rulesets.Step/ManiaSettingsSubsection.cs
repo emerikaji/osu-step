@@ -39,15 +39,7 @@ namespace osu.Game.Rulesets.Step
                     Current = config.GetBindable<double>(ManiaRulesetSetting.ScrollSpeed),
                     KeyboardStep = 1,
                     LabelFormat = v => RulesetSettingsStrings.ScrollSpeedTooltip((int)DrawableManiaRuleset.ComputeScrollTime(v), v),
-                }),
-                new SettingsItemV2(new FormCheckBox
-                {
-                    Caption = RulesetSettingsStrings.TimingBasedColouring,
-                    Current = config.GetBindable<bool>(ManiaRulesetSetting.TimingBasedNoteColouring),
                 })
-                {
-                    Keywords = new[] { "color" },
-                },
             };
 
             Add(new SettingsItemV2(new FormCheckBox

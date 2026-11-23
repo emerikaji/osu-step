@@ -57,14 +57,13 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
         {
             base.LoadComplete();
 
-            if (Result == HitResult.LargeBonus)
+            JudgementText.Text = Result switch
             {
-                JudgementText.Text = "OK!";
-            }
-            else if (Result == HitResult.IgnoreMiss)
-            {
-                JudgementText.Text = "NG!";
-            }
+                HitResult.LargeBonus => "OK!",
+                HitResult.IgnoreMiss => "NG!",
+                HitResult.ComboBreak => "BOOM!",
+                _ => JudgementText.Text
+            };
         }
 
         private void onDirectionChanged()
@@ -100,7 +99,7 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
                         .ScaleTo(new Vector2(1.4f), 1800, Easing.OutQuint);
                     break;
 
-                case HitResult.Miss:
+                case HitResult.Miss or HitResult.ComboBreak:
                     this.ScaleTo(1.6f);
                     this.ScaleTo(1, 100, Easing.In);
 

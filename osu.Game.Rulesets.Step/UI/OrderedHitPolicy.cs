@@ -2,7 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
-using osu.Framework.Extensions.IEnumerableExtensions;
+using System.Linq;
 using osu.Game.Rulesets.Objects;
 using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Step.Objects.Drawables;
@@ -33,7 +33,11 @@ namespace osu.Game.Rulesets.Step.UI
         /// <returns>Whether <paramref name="hitObject"/> can be hit at the given <paramref name="time"/>.</returns>
         public bool IsHittable(DrawableHitObject hitObject, double time)
         {
-            var nextObject = hitObjectContainer.AliveObjects.GetNext(hitObject);
+            var nextObject = hitObjectContainer.AliveObjects
+                                               .SkipWhile(o => o != hitObject)
+                                               .Skip(1)
+                                               .FirstOrDefault(o => o is not DrawableMineNote);
+
             return nextObject == null || time < nextObject.HitObject.StartTime;
         }
 
@@ -45,7 +49,7 @@ namespace osu.Game.Rulesets.Step.UI
         {
             foreach (var obj in enumerateHitObjectsUpTo(hitObject.HitObject.StartTime))
             {
-                if (obj.Judged)
+                if (obj.Judged || obj is DrawableMineNote)
                     continue;
 
                 ((DrawableManiaHitObject)obj).MissForcefully();

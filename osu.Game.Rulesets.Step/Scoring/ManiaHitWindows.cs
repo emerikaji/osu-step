@@ -114,6 +114,7 @@ namespace osu.Game.Rulesets.Step.Scoring
                 case HitResult.Miss:
                 case HitResult.LargeBonus:
                 case HitResult.IgnoreMiss:
+                case HitResult.ComboBreak:
                     return true;
             }
 

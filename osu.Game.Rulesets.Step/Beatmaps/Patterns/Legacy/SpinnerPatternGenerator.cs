@@ -79,7 +79,7 @@ namespace osu.Game.Rulesets.Step.Beatmaps.Patterns.Legacy
 
             if (holdNote)
             {
-                newObject = new HoldNote
+                newObject = new RollNote
                 {
                     StartTime = HitObject.StartTime,
                     Duration = endTime - HitObject.StartTime,
