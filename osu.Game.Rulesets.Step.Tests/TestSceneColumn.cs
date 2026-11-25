@@ -4,6 +4,20 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Objects.Drawables;
+using osu.Game.Rulesets.Step.UI;
+using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Tests.Visual;
+using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

@@ -1,7 +1,15 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Input;
+using osu.Framework.Testing;
+using osu.Game.Rulesets.Step.Configuration;
+using osu.Game.Rulesets.Step.UI;
+using osu.Game.Tests.Visual;
+using osuTK;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

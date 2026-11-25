@@ -3,6 +3,8 @@
 
 using System.Reflection;
 using NUnit.Framework;
+using osu.Framework.IO.Stores;
+using osu.Game.Tests.Beatmaps;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

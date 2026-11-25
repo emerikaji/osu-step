@@ -23,7 +23,7 @@ namespace osu.Game.Rulesets.Step.Tests
     {
         protected override IBeatmap CreateBeatmap(int maxCombo)
         {
-            var beatmap = new ManiaBeatmap(new StageDefinition(5));
+            var beatmap = new StepBeatmap(new StageDefinition(5));
             for (int i = 0; i < maxCombo; ++i)
                 beatmap.HitObjects.Add(new Note());
             return beatmap;

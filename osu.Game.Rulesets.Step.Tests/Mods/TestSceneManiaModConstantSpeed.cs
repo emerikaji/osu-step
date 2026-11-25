@@ -1,7 +1,15 @@
 // Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Allocation;
+using osu.Framework.Testing;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Rulesets.Step.Objects.Drawables;
+using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Rulesets.UI.Scrolling.Algorithms;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests.Mods
 {

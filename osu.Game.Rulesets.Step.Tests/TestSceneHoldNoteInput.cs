@@ -4,6 +4,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Screens;
+using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Replays;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Objects.Drawables;
+using osu.Game.Rulesets.Step.Replays;
+using osu.Game.Rulesets.Step.Scoring;
+using osu.Game.Scoring;
+using osu.Game.Screens.Play;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -42,7 +57,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
             assertNoteJudgement(HitResult.IgnoreMiss);
         }
 
@@ -60,7 +75,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Perfect);
+            assertTailJudgement(HitResult.LargeBonus);
             assertNoteJudgement(HitResult.IgnoreHit);
         }
 
@@ -78,8 +93,8 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Miss);
-            assertNoteJudgement(HitResult.IgnoreMiss);
+            assertTailJudgement(HitResult.LargeBonus);
+            assertNoteJudgement(HitResult.IgnoreHit);
         }
 
         /// <summary>
@@ -96,7 +111,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -113,7 +128,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -132,7 +147,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.LargeBonus);
         }
 
         /// <summary>
@@ -151,7 +166,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Perfect);
+            assertTailJudgement(HitResult.LargeBonus);
         }
 
         /// <summary>
@@ -169,7 +184,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -189,8 +204,8 @@ namespace osu.Game.Rulesets.Step.Tests
 
             assertHeadJudgement(HitResult.Perfect);
             assertComboAtJudgement(0, 1);
-            assertTailJudgement(HitResult.Meh);
-            assertComboAtJudgement(1, 0);
+            assertTailJudgement(HitResult.LargeBonus);
+            assertComboAtJudgement(1, 1);
             assertComboAtJudgement(3, 1);
         }
 
@@ -210,7 +225,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -229,7 +244,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Meh);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -246,7 +261,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -263,7 +278,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Meh);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         /// <summary>
@@ -310,7 +325,7 @@ namespace osu.Game.Rulesets.Step.Tests
             }, beatmap);
 
             assertHeadJudgement(HitResult.Good);
-            assertTailJudgement(HitResult.Perfect);
+            assertTailJudgement(HitResult.LargeBonus);
 
             assertHitObjectJudgement(note, HitResult.Miss);
         }
@@ -356,7 +371,7 @@ namespace osu.Game.Rulesets.Step.Tests
             }, beatmap);
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
 
             assertHitObjectJudgement(note, HitResult.Good);
         }
@@ -397,7 +412,7 @@ namespace osu.Game.Rulesets.Step.Tests
             }, beatmap);
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
 
             assertHitObjectJudgement(note, HitResult.Great);
         }
@@ -416,7 +431,7 @@ namespace osu.Game.Rulesets.Step.Tests
             });
 
             assertHeadJudgement(HitResult.Miss);
-            assertTailJudgement(HitResult.Meh);
+            assertTailJudgement(HitResult.IgnoreMiss);
         }
 
         [Test]
@@ -509,11 +524,11 @@ namespace osu.Game.Rulesets.Step.Tests
             ]);
 
             assertHeadJudgement(HitResult.Perfect);
-            assertTailJudgement(HitResult.Miss);
+            assertTailJudgement(HitResult.IgnoreMiss);
             assertNoteJudgement(HitResult.IgnoreMiss);
 
             AddAssert("body judgement is miss", () => !judgementResults.Single(j => j.HitObject is HoldNoteBody).IsHit);
-            AddAssert("body judgement time indicates during hold", () => judgementResults.Single(j => j.HitObject is HoldNoteBody).TimeAbsolute, () => Is.EqualTo(time_during_hold_1).Within(100));
+            AddAssert("body judgement time indicates during hold", () => judgementResults.Single(j => j.HitObject is HoldNoteBody).TimeAbsolute, () => Is.EqualTo(time_during_hold_1 + DrawableHoldNote.REHOLD_GRACE_PERIOD).Within(100));
         }
 
         private void assertHitObjectJudgement(HitObject hitObject, HitResult result)

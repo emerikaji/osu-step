@@ -2,6 +2,8 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using NUnit.Framework;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Replays;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -14,7 +16,7 @@ namespace osu.Game.Rulesets.Step.Tests
         [TestCase(ManiaAction.Key9)]
         public void TestEncodeDecodeSingleStage(params ManiaAction[] actions)
         {
-            var beatmap = new ManiaBeatmap(new StageDefinition(9));
+            var beatmap = new StepBeatmap(new StageDefinition(9));
 
             var frame = new ManiaReplayFrame(0, actions);
             var legacyFrame = frame.ToLegacy(beatmap);
@@ -34,7 +36,7 @@ namespace osu.Game.Rulesets.Step.Tests
         [TestCase(ManiaAction.Key10)]
         public void TestEncodeDecodeDualStage(params ManiaAction[] actions)
         {
-            var beatmap = new ManiaBeatmap(new StageDefinition(5));
+            var beatmap = new StepBeatmap(new StageDefinition(5));
             beatmap.Stages.Add(new StageDefinition(5));
 
             var frame = new ManiaReplayFrame(0, actions);

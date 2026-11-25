@@ -51,8 +51,8 @@ namespace osu.Game.Rulesets.Step.Difficulty
                 return multiplier;
 
             // Apply key mod multipliers.
-            int originalColumns = ManiaBeatmapConverter.GetColumnCount(difficulty);
-            int actualColumns = ManiaBeatmapConverter.GetColumnCount(difficulty, mods);
+            int originalColumns = StepBeatmapConverter.GetColumnCount(difficulty);
+            int actualColumns = StepBeatmapConverter.GetColumnCount(difficulty, mods);
 
             if (actualColumns > originalColumns)
                 multiplier *= 0.9;

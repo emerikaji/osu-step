@@ -3,6 +3,14 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using osu.Framework.Allocation;
+using osu.Game.Beatmaps;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.UI;
+using osuTK;
 
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {
@@ -63,7 +71,7 @@ namespace osu.Game.Rulesets.Step.Tests.Skinning
 
         protected override IBeatmap CreateBeatmapForSkinProvider()
         {
-            var maniaBeatmap = (ManiaBeatmap)base.CreateBeatmapForSkinProvider();
+            var maniaBeatmap = (StepBeatmap)base.CreateBeatmapForSkinProvider();
             maniaBeatmap.Stages = stageDefinitions;
             return maniaBeatmap;
         }

@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Step.Mods
             Seed.Value ??= RNG.Next();
             var rng = new Random((int)Seed.Value);
 
-            int availableColumns = ((ManiaBeatmap)beatmap).TotalColumns;
+            int availableColumns = ((StepBeatmap)beatmap).TotalColumns;
             var shuffledColumns = Enumerable.Range(0, availableColumns).OrderBy(_ => rng.Next()).ToList();
 
             beatmap.HitObjects.OfType<ManiaHitObject>().ForEach(h => h.Column = shuffledColumns[h.Column]);

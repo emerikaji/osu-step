@@ -3,6 +3,16 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using osu.Framework.Utils;
+using osu.Game.Beatmaps;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Replays;
+using osu.Game.Rulesets.Step.Scoring;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests.Mods
 {

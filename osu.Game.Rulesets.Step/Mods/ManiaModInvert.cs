@@ -27,11 +27,11 @@ namespace osu.Game.Rulesets.Step.Mods
 
         public override ModType Type => ModType.Conversion;
 
-        public override Type[] IncompatibleMods => new[] { typeof(ManiaModHoldOff), typeof(ManiaModNoRelease) };
+        public override Type[] IncompatibleMods => new[] { typeof(StepModHoldOff) };
 
         public void ApplyToBeatmap(IBeatmap beatmap)
         {
-            var maniaBeatmap = (ManiaBeatmap)beatmap;
+            var maniaBeatmap = (StepBeatmap)beatmap;
 
             var newObjects = new List<ManiaHitObject>();
 

@@ -64,13 +64,13 @@ namespace osu.Game.Rulesets.Step.Skinning.Legacy
         /// </summary>
         private readonly Lazy<bool> hasKeyTexture;
 
-        private readonly ManiaBeatmap beatmap;
+        private readonly StepBeatmap beatmap;
         private readonly bool isBeatmapConverted;
 
         public ManiaLegacySkinTransformer(ISkin skin, IBeatmap beatmap)
             : base(skin)
         {
-            this.beatmap = (ManiaBeatmap)beatmap;
+            this.beatmap = (StepBeatmap)beatmap;
             isBeatmapConverted = !beatmap.BeatmapInfo.Ruleset.Equals(new StepRuleset().RulesetInfo);
 
             isLegacySkin = new Lazy<bool>(() => GetConfig<SkinConfiguration.LegacySetting, decimal>(SkinConfiguration.LegacySetting.Version) != null);
@@ -147,46 +147,49 @@ namespace osu.Game.Rulesets.Step.Skinning.Legacy
                 case SkinComponentLookup<HitResult> resultComponent:
                     return getResult(resultComponent.Component);
 
-                case ManiaSkinComponentLookup maniaComponent:
+                case StepSkinComponentLookup maniaComponent:
                     if (!isLegacySkin.Value || !hasKeyTexture.Value)
                         return null;
 
                     switch (maniaComponent.Component)
                     {
-                        case ManiaSkinComponents.ColumnBackground:
+                        case StepSkinComponents.ColumnBackground:
                             return new LegacyColumnBackground();
 
-                        case ManiaSkinComponents.HitTarget:
+                        case StepSkinComponents.HitTarget:
                             // Legacy skins sandwich the hit target between the column background and the column light.
                             // To preserve this ordering, it's created manually inside LegacyStageBackground.
                             return Drawable.Empty();
 
-                        case ManiaSkinComponents.KeyArea:
+                        case StepSkinComponents.KeyArea:
                             return new LegacyKeyArea();
 
-                        case ManiaSkinComponents.Note:
+                        case StepSkinComponents.Note:
                             return new LegacyNotePiece();
 
-                        case ManiaSkinComponents.HoldNoteHead:
+                        case StepSkinComponents.HoldNoteHead:
                             return new LegacyHoldNoteHeadPiece();
 
-                        case ManiaSkinComponents.HoldNoteTail:
+                        case StepSkinComponents.HoldNoteTail:
                             return new LegacyHoldNoteTailPiece();
 
-                        case ManiaSkinComponents.HoldNoteBody:
+                        case StepSkinComponents.HoldNoteBody:
                             return new LegacyBodyPiece();
 
-                        case ManiaSkinComponents.HitExplosion:
+                        case StepSkinComponents.HitExplosion:
                             return new LegacyHitExplosion();
 
-                        case ManiaSkinComponents.StageBackground:
+                        case StepSkinComponents.StageBackground:
                             return new LegacyStageBackground();
 
-                        case ManiaSkinComponents.StageForeground:
+                        case StepSkinComponents.StageForeground:
                             return new LegacyStageForeground();
 
-                        case ManiaSkinComponents.BarLine:
+                        case StepSkinComponents.BarLine:
                             return new LegacyBarLine();
+
+                        case StepSkinComponents.MineNote:
+                            return null;
 
                         default:
                             throw new UnsupportedSkinComponentException(lookup);

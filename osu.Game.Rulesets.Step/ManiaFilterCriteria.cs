@@ -25,7 +25,7 @@ namespace osu.Game.Rulesets.Step
 
         public bool Matches(BeatmapInfo beatmapInfo, FilterCriteria criteria)
         {
-            int keyCount = ManiaBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), criteria.Mods);
+            int keyCount = StepBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), criteria.Mods);
 
             bool keyCountMatch = includedKeyCounts.Contains(keyCount);
             bool longNotePercentageMatch = !longNotePercentage.HasFilter || (!isConvertedBeatmap(beatmapInfo) && longNotePercentage.IsInRange(calculateLongNotePercentage(beatmapInfo)));

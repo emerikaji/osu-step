@@ -3,6 +3,10 @@
 
 #nullable disable
 
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
+using osu.Game.Skinning;
+
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {
     public partial class TestSceneStageForeground : ManiaSkinnableTestScene
@@ -10,7 +14,7 @@ namespace osu.Game.Rulesets.Step.Tests.Skinning
         [BackgroundDependencyLoader]
         private void load()
         {
-            SetContents(_ => new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.StageForeground), _ => null)
+            SetContents(_ => new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.StageForeground), _ => null)
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,

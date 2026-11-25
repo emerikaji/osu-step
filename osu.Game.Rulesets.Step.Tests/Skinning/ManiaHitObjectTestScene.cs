@@ -2,6 +2,11 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using NUnit.Framework;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Game.Rulesets.Step.Objects.Drawables;
+using osu.Game.Rulesets.UI.Scrolling;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {

@@ -4,6 +4,12 @@
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using osu.Framework.Testing;
+using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Replays;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -23,14 +29,14 @@ namespace osu.Game.Rulesets.Step.Tests
             // | - |
             // |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(1));
+            var beatmap = new StepBeatmap(new StageDefinition(1));
             beatmap.HitObjects.Add(new Note { StartTime = 1000 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 2, "Incorrect number of frames");
             ClassicAssert.AreEqual(1000, generated.Frames[frame_offset].Time, "Incorrect hit time");
-            ClassicAssert.AreEqual(1000 + ManiaAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 1].Time, "Incorrect release time");
+            ClassicAssert.AreEqual(1000 + StepAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 1].Time, "Incorrect release time");
             ClassicAssert.True(checkContains(generated.Frames[frame_offset], ManiaAction.Key1), "Key1 has not been pressed");
             ClassicAssert.False(checkContains(generated.Frames[frame_offset + 1], ManiaAction.Key1), "Key1 has not been released");
         }
@@ -44,10 +50,10 @@ namespace osu.Game.Rulesets.Step.Tests
             // | * |
             // |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(1));
+            var beatmap = new StepBeatmap(new StageDefinition(1));
             beatmap.HitObjects.Add(new HoldNote { StartTime = 1000, Duration = 2000 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 2, "Incorrect number of frames");
             ClassicAssert.AreEqual(1000, generated.Frames[frame_offset].Time, "Incorrect hit time");
@@ -63,15 +69,15 @@ namespace osu.Game.Rulesets.Step.Tests
             // | - | - |
             // |   |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(2));
+            var beatmap = new StepBeatmap(new StageDefinition(2));
             beatmap.HitObjects.Add(new Note { StartTime = 1000 });
             beatmap.HitObjects.Add(new Note { StartTime = 1000, Column = 1 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 2, "Incorrect number of frames");
             ClassicAssert.AreEqual(1000, generated.Frames[frame_offset].Time, "Incorrect hit time");
-            ClassicAssert.AreEqual(1000 + ManiaAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 1].Time, "Incorrect release time");
+            ClassicAssert.AreEqual(1000 + StepAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 1].Time, "Incorrect release time");
             ClassicAssert.True(checkContains(generated.Frames[frame_offset], ManiaAction.Key1, ManiaAction.Key2), "Key1 & Key2 have not been pressed");
             ClassicAssert.False(checkContains(generated.Frames[frame_offset + 1], ManiaAction.Key1, ManiaAction.Key2), "Key1 & Key2 have not been released");
         }
@@ -85,11 +91,11 @@ namespace osu.Game.Rulesets.Step.Tests
             // | * | * |
             // |   |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(2));
+            var beatmap = new StepBeatmap(new StageDefinition(2));
             beatmap.HitObjects.Add(new HoldNote { StartTime = 1000, Duration = 2000 });
             beatmap.HitObjects.Add(new HoldNote { StartTime = 1000, Duration = 2000, Column = 1 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 2, "Incorrect number of frames");
 
@@ -108,17 +114,17 @@ namespace osu.Game.Rulesets.Step.Tests
             // | - |   |
             // |   |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(2));
+            var beatmap = new StepBeatmap(new StageDefinition(2));
             beatmap.HitObjects.Add(new Note { StartTime = 1000 });
             beatmap.HitObjects.Add(new Note { StartTime = 2000, Column = 1 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 4, "Incorrect number of frames");
             ClassicAssert.AreEqual(1000, generated.Frames[frame_offset].Time, "Incorrect first note hit time");
-            ClassicAssert.AreEqual(1000 + ManiaAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 1].Time, "Incorrect first note release time");
+            ClassicAssert.AreEqual(1000 + StepAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 1].Time, "Incorrect first note release time");
             ClassicAssert.AreEqual(2000, generated.Frames[frame_offset + 2].Time, "Incorrect second note hit time");
-            ClassicAssert.AreEqual(2000 + ManiaAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 3].Time, "Incorrect second note release time");
+            ClassicAssert.AreEqual(2000 + StepAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 3].Time, "Incorrect second note release time");
             ClassicAssert.True(checkContains(generated.Frames[frame_offset], ManiaAction.Key1), "Key1 has not been pressed");
             ClassicAssert.False(checkContains(generated.Frames[frame_offset + 1], ManiaAction.Key1), "Key1 has not been released");
             ClassicAssert.True(checkContains(generated.Frames[frame_offset + 2], ManiaAction.Key2), "Key2 has not been pressed");
@@ -135,11 +141,11 @@ namespace osu.Game.Rulesets.Step.Tests
             // | * |   |
             // |   |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(2));
+            var beatmap = new StepBeatmap(new StageDefinition(2));
             beatmap.HitObjects.Add(new HoldNote { StartTime = 1000, Duration = 2000 });
             beatmap.HitObjects.Add(new HoldNote { StartTime = 2000, Duration = 2000, Column = 1 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 4, "Incorrect number of frames");
             ClassicAssert.AreEqual(1000, generated.Frames[frame_offset].Time, "Incorrect first note hit time");
@@ -162,16 +168,16 @@ namespace osu.Game.Rulesets.Step.Tests
             // | * |   |
             // |   |   |
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(2));
+            var beatmap = new StepBeatmap(new StageDefinition(2));
             beatmap.HitObjects.Add(new HoldNote { StartTime = 1000, Duration = 2000 });
             beatmap.HitObjects.Add(new Note { StartTime = 3000, Column = 1 });
 
-            var generated = new ManiaAutoGenerator(beatmap).Generate();
+            var generated = new StepAutoGenerator(beatmap).Generate();
 
             ClassicAssert.AreEqual(generated.Frames.Count, frame_offset + 3, "Incorrect number of frames");
             ClassicAssert.AreEqual(1000, generated.Frames[frame_offset].Time, "Incorrect first note hit time");
             ClassicAssert.AreEqual(3000, generated.Frames[frame_offset + 1].Time, "Incorrect second note press time + first note release time");
-            ClassicAssert.AreEqual(3000 + ManiaAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 2].Time, "Incorrect second note release time");
+            ClassicAssert.AreEqual(3000 + StepAutoGenerator.RELEASE_DELAY, generated.Frames[frame_offset + 2].Time, "Incorrect second note release time");
             ClassicAssert.True(checkContains(generated.Frames[frame_offset], ManiaAction.Key1), "Key1 has not been pressed");
             ClassicAssert.False(checkContains(generated.Frames[frame_offset + 1], ManiaAction.Key1), "Key1 has not been released");
             ClassicAssert.True(checkContains(generated.Frames[frame_offset + 1], ManiaAction.Key2), "Key2 has not been pressed");

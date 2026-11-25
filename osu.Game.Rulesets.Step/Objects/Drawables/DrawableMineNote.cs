@@ -1,10 +1,11 @@
 ﻿using System;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
-using osu.Game.Graphics;
+using osu.Game.Rulesets.Objects.Drawables;
 using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Skinning.Default;
+using osu.Game.Skinning;
 using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Step.Objects.Drawables
@@ -26,55 +27,50 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         {
         }
 
-        [BackgroundDependencyLoader]
-        private void load()
-        {
-            // Overlay a clear "X" warning symbol on top of the skinned note piece
-            AddInternal(new SpriteText
-            {
-                Anchor = Anchor.Centre,
-                Origin = Anchor.Centre,
-                Text = "X",
-                Font = OsuFont.Default.With(size: 32, weight: FontWeight.Bold),
-                Colour = Color4.White,
-            });
-        }
-
         public override bool DisplayResult => Result?.Type == HitResult.ComboBreak;
+
+        protected override StepSkinComponents Component => StepSkinComponents.MineNote;
+
+        protected override Drawable CreateHeadPiece() => new SkinnableDrawable(new StepSkinComponentLookup(Component), _ => new DefaultMineNotePiece())
+        {
+            RelativeSizeAxes = Axes.X,
+            AutoSizeAxes = Axes.Y
+        };
 
         protected override void OnApply()
         {
             base.OnApply();
             isKeyDown = false;
-            Colour = new Color4(220, 40, 40, 255); // Red bomb tint (overrides snap colour)
+            Colour = Color4.White;
+            AccentColour.Value = Color4.DarkRed;
         }
 
         protected override void Update()
         {
             base.Update();
 
-            // Keep bomb red even if snap-colour bindables fire
-            Colour = new Color4(220, 40, 40, 255);
-
             if (AllJudged)
                 return;
 
-            double timeOffset = Time.Current - HitObject.StartTime;
             bool currentlyHeld = isKeyDown || (maniaInputManager?.KeyBindingContainer.PressedActions.Contains(Action.Value) ?? false);
-
-            if (currentlyHeld && Math.Abs(timeOffset) <= MineNote.MINE_HIT_WINDOW)
-            {
-                ApplyMinResult();
-                return;
-            }
-
-            if (timeOffset > MineNote.MINE_HIT_WINDOW)
-                ApplyMaxResult();
+            if (currentlyHeld)
+                UpdateResult(true);
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)
         {
-            // Handled directly in Update() and OnPressed() using MineNote.MINE_HIT_WINDOW
+            if (!userTriggered)
+            {
+                if (timeOffset > MineNote.MINE_HIT_WINDOW)
+                    ApplyMaxResult();
+
+                return;
+            }
+
+            if (Math.Abs(timeOffset) <= MineNote.MINE_HIT_WINDOW)
+            {
+                ApplyMinResult();
+            }
         }
 
         public override bool OnPressed(KeyBindingPressEvent<ManiaAction> e)
@@ -84,19 +80,21 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
 
             isKeyDown = true;
 
-            if (!AllJudged && Math.Abs(Time.Current - HitObject.StartTime) <= MineNote.MINE_HIT_WINDOW)
-            {
-                ApplyMinResult();
-                return true;
-            }
-
-            return false;
+            return UpdateResult(true);
         }
 
         public override void OnReleased(KeyBindingReleaseEvent<ManiaAction> e)
         {
             if (e.Action == Action.Value)
                 isKeyDown = false;
+        }
+
+        protected override void UpdateHitStateTransforms(ArmedState state)
+        {
+            if (state == ArmedState.Miss)
+                base.UpdateHitStateTransforms(ArmedState.Hit);
+            if (state == ArmedState.Hit)
+                base.UpdateHitStateTransforms(ArmedState.Miss);
         }
     }
 }

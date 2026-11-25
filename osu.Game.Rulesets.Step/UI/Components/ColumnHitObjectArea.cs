@@ -28,7 +28,7 @@ namespace osu.Game.Rulesets.Step.UI.Components
                 {
                     RelativeSizeAxes = Axes.Both,
                 },
-                hitTarget = new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.HitTarget), _ => new DefaultHitTarget())
+                hitTarget = new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.HitTarget), _ => new DefaultHitTarget())
                 {
                     RelativeSizeAxes = Axes.X,
                 },

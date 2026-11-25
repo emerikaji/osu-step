@@ -2,7 +2,18 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Pooling;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Step.Judgements;
+using osu.Game.Rulesets.Step.UI;
+using osu.Game.Rulesets.Step.Skinning.Default;
+using osuTK;
 
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {

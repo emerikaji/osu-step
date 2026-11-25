@@ -20,7 +20,7 @@ namespace osu.Game.Rulesets.Step.Scoring
             Single<ManiaModNoFail>(hasMultiplier: 0.5);
             Single<ManiaModHalfTime>(hasMultiplier: halfTime => rateAdjustMultiplier(halfTime.SpeedChange.Value));
             Single<ManiaModDaycore>(hasMultiplier: daycore => rateAdjustMultiplier(daycore.SpeedChange.Value));
-            Single<ManiaModNoRelease>(hasMultiplier: 0.9);
+            Single<StepModNoMines>(hasMultiplier: 0.9);
 
             #endregion
 
@@ -48,7 +48,7 @@ namespace osu.Game.Rulesets.Step.Scoring
             Single<ManiaModClassic>(hasMultiplier: _ => classicMultiplier(Context.Score));
             // Invert
             Single<ManiaModConstantSpeed>(hasMultiplier: 0.9);
-            Single<ManiaModHoldOff>(hasMultiplier: 0.9);
+            Single<StepModHoldOff>(hasMultiplier: 0.9);
             Single<ManiaModKey1>(hasMultiplier: keyModMultiplier(Context.Score));
             Single<ManiaModKey2>(hasMultiplier: keyModMultiplier(Context.Score));
             Single<ManiaModKey3>(hasMultiplier: keyModMultiplier(Context.Score));

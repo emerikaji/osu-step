@@ -44,7 +44,7 @@ namespace osu.Game.Rulesets.Step.UI
 
         public new ManiaPlayfield Playfield => (ManiaPlayfield)base.Playfield;
 
-        public new ManiaBeatmap Beatmap => (ManiaBeatmap)base.Beatmap;
+        public new StepBeatmap Beatmap => (StepBeatmap)base.Beatmap;
 
         public IEnumerable<BarLine> BarLines;
 

@@ -29,7 +29,6 @@ namespace osu.Game.Rulesets.Step.Mods
 
                 case HoldNote hold:
                     ((ManiaHitWindows)hold.Head.HitWindows).SpeedMultiplier = SpeedChange.Value;
-                    ((ManiaHitWindows)hold.Tail.HitWindows).SpeedMultiplier = SpeedChange.Value;
                     break;
             }
         }

@@ -26,6 +26,7 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
         private readonly IBindable<Color4> accentColour = new Bindable<Color4>();
 
         private readonly Box colouredBox;
+        protected virtual bool ShowBottomHighlight => true;
 
         public ArgonNotePiece()
         {
@@ -35,8 +36,8 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
             CornerRadius = CORNER_RADIUS;
             Masking = true;
 
-            InternalChildren = new[]
-            {
+            InternalChildren =
+            [
                 new Box
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -50,23 +51,28 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
                     Height = NOTE_ACCENT_RATIO,
                     Masking = true,
                     CornerRadius = CORNER_RADIUS,
-                    Children = new Drawable[]
-                    {
+                    Children =
+                    [
                         colouredBox = new Box
                         {
                             RelativeSizeAxes = Axes.Both,
                         }
-                    }
-                },
-                new Circle
+                    ]
+                }
+            ];
+
+            if (ShowBottomHighlight)
+            {
+                AddInternal(new Circle
                 {
                     Anchor = Anchor.BottomLeft,
                     Origin = Anchor.BottomLeft,
                     RelativeSizeAxes = Axes.X,
                     Height = CORNER_RADIUS * 2,
-                },
-                CreateIcon(),
-            };
+                });
+            }
+
+            AddInternal(CreateIcon());
         }
 
         protected virtual Drawable CreateIcon() => new SpriteIcon

@@ -3,6 +3,9 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests.Mods
 {
@@ -16,7 +19,7 @@ namespace osu.Game.Rulesets.Step.Tests.Mods
             CreateModTest(new ModTestData
             {
                 Autoplay = true,
-                CreateBeatmap = () => new ManiaBeatmap(new StageDefinition(1))
+                CreateBeatmap = () => new StepBeatmap(new StageDefinition(1))
                 {
                     HitObjects = new List<ManiaHitObject>
                     {
@@ -32,7 +35,7 @@ namespace osu.Game.Rulesets.Step.Tests.Mods
                         },
                     }
                 },
-                PassCondition = () => Player.ScoreProcessor.Combo.Value == 4
+                PassCondition = () => Player.ScoreProcessor.Combo.Value == 2
             });
         }
     }

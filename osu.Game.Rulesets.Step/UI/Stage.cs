@@ -85,7 +85,7 @@ namespace osu.Game.Rulesets.Step.UI
                     AutoSizeAxes = Axes.X,
                     Children = new Drawable[]
                     {
-                        new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.StageBackground), _ => new DefaultStageBackground())
+                        new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.StageBackground), _ => new DefaultStageBackground())
                         {
                             RelativeSizeAxes = Axes.Both
                         },
@@ -116,7 +116,7 @@ namespace osu.Game.Rulesets.Step.UI
                         {
                             RelativeSizeAxes = Axes.Y,
                         },
-                        new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.StageForeground))
+                        new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.StageForeground))
                         {
                             RelativeSizeAxes = Axes.Both
                         },

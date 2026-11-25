@@ -18,7 +18,7 @@ namespace osu.Game.Rulesets.Step.Mods
 
         public void ApplyToBeatmap(IBeatmap beatmap)
         {
-            int availableColumns = ((ManiaBeatmap)beatmap).TotalColumns;
+            int availableColumns = ((StepBeatmap)beatmap).TotalColumns;
 
             beatmap.HitObjects.OfType<ManiaHitObject>().ForEach(h => h.Column = availableColumns - 1 - h.Column);
         }

@@ -18,12 +18,12 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
 {
     public class ManiaArgonSkinTransformer : SkinTransformer
     {
-        private readonly ManiaBeatmap beatmap;
+        private readonly StepBeatmap beatmap;
 
         public ManiaArgonSkinTransformer(ISkin skin, IBeatmap beatmap)
             : base(skin)
         {
-            this.beatmap = (ManiaBeatmap)beatmap;
+            this.beatmap = (StepBeatmap)beatmap;
         }
 
         public override Drawable? GetDrawableComponent(ISkinComponentLookup lookup)
@@ -97,35 +97,38 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
 
                     return new ArgonJudgementPiece(resultComponent.Component);
 
-                case ManiaSkinComponentLookup maniaComponent:
+                case StepSkinComponentLookup maniaComponent:
                     // TODO: Once everything is finalised, consider throwing UnsupportedSkinComponentException on missing entries.
                     switch (maniaComponent.Component)
                     {
-                        case ManiaSkinComponents.StageBackground:
+                        case StepSkinComponents.StageBackground:
                             return new ArgonStageBackground();
 
-                        case ManiaSkinComponents.ColumnBackground:
+                        case StepSkinComponents.ColumnBackground:
                             return new ArgonColumnBackground();
 
-                        case ManiaSkinComponents.HoldNoteBody:
+                        case StepSkinComponents.HoldNoteBody:
                             return new ArgonHoldBodyPiece();
 
-                        case ManiaSkinComponents.HoldNoteTail:
+                        case StepSkinComponents.HoldNoteTail:
                             return new ArgonHoldNoteTailPiece();
 
-                        case ManiaSkinComponents.HoldNoteHead:
+                        case StepSkinComponents.HoldNoteHead:
                             return new ArgonHoldNoteHeadPiece();
 
-                        case ManiaSkinComponents.Note:
+                        case StepSkinComponents.Note:
                             return new ArgonNotePiece();
 
-                        case ManiaSkinComponents.HitTarget:
+                        case StepSkinComponents.MineNote:
+                            return new ArgonMineNotePiece();
+
+                        case StepSkinComponents.HitTarget:
                             return new ArgonHitTarget();
 
-                        case ManiaSkinComponents.KeyArea:
+                        case StepSkinComponents.KeyArea:
                             return new ArgonKeyArea();
 
-                        case ManiaSkinComponents.HitExplosion:
+                        case StepSkinComponents.HitExplosion:
                             return new ArgonHitExplosion();
                     }
 
@@ -182,15 +185,11 @@ namespace osu.Game.Rulesets.Step.Skinning.Argon
                         return SkinUtils.As<TValue>(new Bindable<float>(width));
 
                     case LegacyManiaSkinConfigurationLookups.ColumnBackgroundColour:
-                        var colour = getColourForLayout(columnIndex, stage);
-
-                        return SkinUtils.As<TValue>(new Bindable<Color4>(colour));
+                        return SkinUtils.As<TValue>(new Bindable<Color4>(Color4.Gray));
                 }
             }
 
             return base.GetConfig<TLookup, TValue>(lookup);
         }
-
-        private static Color4 getColourForLayout(int columnIndex, StageDefinition stage) => Color4.Gray;
     }
 }

@@ -32,7 +32,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         [BackgroundDependencyLoader(true)]
         private void load()
         {
-            AddInternal(new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.BarLine), _ => new DefaultBarLine())
+            AddInternal(new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.BarLine), _ => new DefaultBarLine())
             {
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,

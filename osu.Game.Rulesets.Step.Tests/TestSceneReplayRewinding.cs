@@ -29,7 +29,7 @@ namespace osu.Game.Rulesets.Step.Tests
         {
             Score score = null!;
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(4))
+            var beatmap = new StepBeatmap(new StageDefinition(4))
             {
                 HitObjects =
                 {
@@ -73,7 +73,7 @@ namespace osu.Game.Rulesets.Step.Tests
         {
             Score score = null!;
 
-            var beatmap = new ManiaBeatmap(new StageDefinition(4))
+            var beatmap = new StepBeatmap(new StageDefinition(4))
             {
                 HitObjects =
                 {

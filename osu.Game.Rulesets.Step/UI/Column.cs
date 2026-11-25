@@ -95,7 +95,7 @@ namespace osu.Game.Rulesets.Step.UI
                 hitExplosionPool = new DrawablePool<PoolableHitExplosion>(5),
                 sampleTriggerSource = new GameplaySampleTriggerSource(HitObjectContainer),
                 HitObjectArea,
-                keyArea = new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.KeyArea), _ => new DefaultKeyArea())
+                keyArea = new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.KeyArea), _ => new DefaultKeyArea())
                 {
                     RelativeSizeAxes = Axes.Both,
                 },
@@ -105,7 +105,7 @@ namespace osu.Game.Rulesets.Step.UI
                 TopLevelContainer
             };
 
-            var background = new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.ColumnBackground), _ => new DefaultColumnBackground())
+            var background = new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.ColumnBackground), _ => new DefaultColumnBackground())
             {
                 RelativeSizeAxes = Axes.Both,
             };
@@ -171,7 +171,7 @@ namespace osu.Game.Rulesets.Step.UI
 
             DrawableManiaHitObject maniaObject = (DrawableManiaHitObject)drawableHitObject;
 
-            if (maniaObject is not DrawableNote or DrawableHoldNoteTail or DrawableMineNote)
+            if (maniaObject is not DrawableNote or DrawableHoldNoteTail)
                 maniaObject.AccentColour.BindTo(AccentColour);
 
             maniaObject.CheckHittable = (hitObject, time) => hitObject is DrawableMineNote || hitPolicy.IsHittable(hitObject, time);

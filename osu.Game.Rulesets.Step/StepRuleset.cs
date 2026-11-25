@@ -19,7 +19,6 @@ using osu.Game.Localisation.Mania;
 using osu.Game.Overlays.Settings;
 using osu.Game.Rulesets.Configuration;
 using osu.Game.Rulesets.Difficulty;
-using osu.Game.Rulesets.Edit;
 using osu.Game.Rulesets.Filter;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.Replays.Types;
@@ -29,8 +28,6 @@ using osu.Game.Rulesets.UI;
 using osu.Game.Rulesets.Step.Beatmaps;
 using osu.Game.Rulesets.Step.Configuration;
 using osu.Game.Rulesets.Step.Difficulty;
-using osu.Game.Rulesets.Step.Edit;
-using osu.Game.Rulesets.Step.Edit.Setup;
 using osu.Game.Rulesets.Step.Mods;
 using osu.Game.Rulesets.Step.Replays;
 using osu.Game.Rulesets.Step.Scoring;
@@ -39,7 +36,6 @@ using osu.Game.Rulesets.Step.Skinning.Default;
 using osu.Game.Rulesets.Step.Skinning.Legacy;
 using osu.Game.Rulesets.Step.UI;
 using osu.Game.Scoring;
-using osu.Game.Screens.Edit.Setup;
 using osu.Game.Screens.Ranking.Statistics;
 using osu.Game.Skinning;
 using osuTK;
@@ -59,17 +55,13 @@ namespace osu.Game.Rulesets.Step
 
         public override HealthProcessor CreateHealthProcessor(double drainStartTime) => new ManiaHealthProcessor(drainStartTime);
 
-        public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new ManiaBeatmapConverter(beatmap, this);
+        public override IBeatmapConverter CreateBeatmapConverter(IBeatmap beatmap) => new StepBeatmapConverter(beatmap, this);
 
         public override PerformanceCalculator CreatePerformanceCalculator() => new ManiaPerformanceCalculator();
 
         public const string SHORT_NAME = "step";
 
         public override string RulesetAPIVersionSupported => CURRENT_RULESET_API_VERSION;
-
-        public override HitObjectComposer CreateHitObjectComposer() => new ManiaHitObjectComposer(this);
-
-        public override IBeatmapVerifier CreateBeatmapVerifier() => new ManiaBeatmapVerifier();
 
         public override ISkin? CreateSkinTransformer(ISkin skin, IBeatmap beatmap)
         {
@@ -100,9 +92,9 @@ namespace osu.Game.Rulesets.Step
                 yield return new ManiaModDoubleTime();
 
             if (mods.HasFlag(LegacyMods.Perfect))
-                yield return new ManiaModPerfect();
+                yield return new StepModPerfect();
             else if (mods.HasFlag(LegacyMods.SuddenDeath))
-                yield return new ManiaModSuddenDeath();
+                yield return new StepModSuddenDeath();
 
             if (mods.HasFlag(LegacyMods.Cinema))
                 yield return new ManiaModCinema();
@@ -246,14 +238,14 @@ namespace osu.Game.Rulesets.Step
                         new ManiaModEasy(),
                         new ManiaModNoFail(),
                         new MultiMod(new ManiaModHalfTime(), new ManiaModDaycore()),
-                        new ManiaModNoRelease(),
+                        new StepModNoMines(),
                     };
 
                 case ModType.DifficultyIncrease:
                     return new Mod[]
                     {
                         new ManiaModHardRock(),
-                        new MultiMod(new ManiaModSuddenDeath(), new ManiaModPerfect()),
+                        new MultiMod(new StepModSuddenDeath(), new StepModPerfect()),
                         new MultiMod(new ManiaModDoubleTime(), new ManiaModNightcore()),
                         new MultiMod(new ManiaModFadeIn(), new ManiaModHidden(), new ManiaModCover()),
                         new ManiaModFlashlight(),
@@ -270,7 +262,7 @@ namespace osu.Game.Rulesets.Step
                         new ManiaModClassic(),
                         new ManiaModInvert(),
                         new ManiaModConstantSpeed(),
-                        new ManiaModHoldOff(),
+                        new StepModHoldOff(),
                         new MultiMod(
                             new ManiaModKey1(),
                             new ManiaModKey2(),
@@ -320,7 +312,7 @@ namespace osu.Game.Rulesets.Step
 
         public override Drawable CreateIcon() => new SpriteIcon { Icon = OsuIcon.RulesetMania };
 
-        public override DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap) => new ManiaDifficultyCalculator(RulesetInfo, beatmap);
+        public override DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap) => new StepDifficultyCalculator(RulesetInfo, beatmap);
 
         public ILegacyScoreSimulator CreateLegacyScoreSimulator() => new ManiaLegacyScoreSimulator();
 
@@ -468,7 +460,7 @@ namespace osu.Game.Rulesets.Step
                 perfectHitWindow /= ManiaModEasy.HIT_WINDOW_DIFFICULTY_MULTIPLIER;
 
             adjustedDifficulty.OverallDifficulty = (float)IBeatmapDifficultyInfo.InverseDifficultyRange(perfectHitWindow, ManiaHitWindows.PERFECT_WINDOW_RANGE);
-            adjustedDifficulty.CircleSize = ManiaBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), mods);
+            adjustedDifficulty.CircleSize = StepBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), mods);
 
             return adjustedDifficulty;
         }
@@ -478,7 +470,7 @@ namespace osu.Game.Rulesets.Step
             // a special touch-up of key count is required to the original difficulty, since key conversion mods are not `IApplicableToDifficulty`
             var originalDifficulty = new BeatmapDifficulty(beatmapInfo.Difficulty)
             {
-                CircleSize = ManiaBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), [])
+                CircleSize = StepBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), [])
             };
             var adjustedDifficulty = GetAdjustedDisplayDifficulty(beatmapInfo, mods);
             var colours = new OsuColour();
@@ -512,10 +504,10 @@ namespace osu.Game.Rulesets.Step
             int rollCount = 0;
             int mineCount = 0;
 
-            if (!string.IsNullOrEmpty(beatmapInfo.Hash) && ManiaBeatmapConverter.ObjectCountsByHash.TryGetValue(beatmapInfo.Hash, out var counts))
+            if (!string.IsNullOrEmpty(beatmapInfo.Hash) && StepBeatmapConverter.ObjectCountsByHash.TryGetValue(beatmapInfo.Hash, out var counts))
             {
                 rollCount = counts.Rolls;
-                mineCount = counts.Mines;
+                mineCount = mods.Any(m => m is StepModNoMines) ? 0 : counts.Mines;
             }
 
             yield return new RulesetBeatmapAttribute("Rolls", @"RL", rollCount, rollCount, Math.Max(10, rollCount))
@@ -550,16 +542,8 @@ namespace osu.Game.Rulesets.Step
             return new ManiaFilterCriteria();
         }
 
-        public override IEnumerable<Drawable> CreateEditorSetupSections() =>
-        [
-            new MetadataSection(),
-            new ManiaDifficultySection(),
-            new ResourcesSection(),
-            new DesignSection(),
-        ];
-
         public int GetKeyCount(IBeatmapInfo beatmapInfo, IReadOnlyList<Mod>? mods = null)
-            => ManiaBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), mods);
+            => StepBeatmapConverter.GetColumnCount(LegacyBeatmapConversionDifficultyInfo.FromBeatmapInfo(beatmapInfo), mods);
 
         public override int GetVariantForBeatmap(IBeatmapInfo beatmapInfo, IReadOnlyList<Mod>? mods = null)
             => GetKeyCount(beatmapInfo, mods);

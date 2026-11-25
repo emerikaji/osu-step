@@ -20,7 +20,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         /// </summary>
         public readonly IBindable<double?> MissingStartTime = new Bindable<double?>();
 
-        protected override ManiaSkinComponents Component => ManiaSkinComponents.HoldNoteTail;
+        protected override StepSkinComponents Component => StepSkinComponents.HoldNoteTail;
 
         protected internal DrawableHoldNote HoldNote => (DrawableHoldNote)ParentHitObject;
 

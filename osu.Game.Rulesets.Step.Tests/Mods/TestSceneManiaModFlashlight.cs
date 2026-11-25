@@ -2,6 +2,8 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using NUnit.Framework;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests.Mods
 {

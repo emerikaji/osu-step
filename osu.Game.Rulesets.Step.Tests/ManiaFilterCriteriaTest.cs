@@ -3,6 +3,10 @@
 
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using osu.Game.Beatmaps;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Screens.Select;
+using osu.Game.Screens.Select.Filter;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

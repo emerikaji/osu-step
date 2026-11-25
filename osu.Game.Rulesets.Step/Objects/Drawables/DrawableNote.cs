@@ -32,9 +32,9 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         [Resolved(canBeNull: true)]
         private IBeatmap beatmap { get; set; }
 
-        protected virtual ManiaSkinComponents Component => ManiaSkinComponents.Note;
+        protected virtual StepSkinComponents Component => StepSkinComponents.Note;
 
-        private Drawable headPiece;
+        protected Drawable HeadPiece;
 
         public DrawableNote()
             : this(null)
@@ -47,14 +47,16 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
             AutoSizeAxes = Axes.Y;
         }
 
+        protected virtual Drawable CreateHeadPiece() => new SkinnableDrawable(new StepSkinComponentLookup(Component), _ => new DefaultNotePiece())
+        {
+            RelativeSizeAxes = Axes.X,
+            AutoSizeAxes = Axes.Y
+        };
+
         [BackgroundDependencyLoader(true)]
         private void load(ManiaRulesetConfigManager rulesetConfig)
         {
-            AddInternal(headPiece = new SkinnableDrawable(new ManiaSkinComponentLookup(Component), _ => new DefaultNotePiece())
-            {
-                RelativeSizeAxes = Axes.X,
-                AutoSizeAxes = Axes.Y
-            });
+            AddInternal(HeadPiece = CreateHeadPiece());
         }
 
         protected override void LoadComplete()
@@ -74,7 +76,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         {
             base.OnDirectionChanged(e);
 
-            headPiece.Anchor = headPiece.Origin = e.NewValue == ScrollingDirection.Up ? Anchor.TopCentre : Anchor.BottomCentre;
+            HeadPiece.Anchor = HeadPiece.Origin = e.NewValue == ScrollingDirection.Up ? Anchor.TopCentre : Anchor.BottomCentre;
         }
 
         protected override void CheckForResult(bool userTriggered, double timeOffset)

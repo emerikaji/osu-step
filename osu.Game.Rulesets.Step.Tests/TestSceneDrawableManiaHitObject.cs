@@ -4,6 +4,19 @@
 #nullable disable
 
 using NUnit.Framework;
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
+using osu.Framework.Input.Events;
+using osu.Framework.Timing;
+using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Objects.Drawables;
+using osu.Game.Rulesets.Step.UI;
+using osu.Game.Rulesets.UI.Scrolling;
+using osu.Game.Tests.Visual;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

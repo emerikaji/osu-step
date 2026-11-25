@@ -4,6 +4,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Screens;
+using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Replays;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Replays;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Replays;
+using osu.Game.Scoring;
+using osu.Game.Screens.Play;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -44,7 +56,7 @@ namespace osu.Game.Rulesets.Step.Tests
             AddAssert("all objects perfectly judged",
                 () => judgementResults.Select(result => result.Type),
                 () => Is.EquivalentTo(judgementResults.Select(result => result.Judgement.MaxResult)));
-            AddAssert("score is correct", () => currentPlayer.ScoreProcessor.TotalScore.Value, () => Is.EqualTo(1_000_000));
+            AddAssert("score is correct", () => currentPlayer.ScoreProcessor.TotalScore.Value, () => Is.EqualTo(1_000_000 + 50));
         }
 
         [Test]
@@ -77,7 +89,7 @@ namespace osu.Game.Rulesets.Step.Tests
             AddAssert("all objects perfectly judged",
                 () => judgementResults.Select(result => result.Type),
                 () => Is.EquivalentTo(judgementResults.Select(result => result.Judgement.MaxResult)));
-            AddAssert("score is correct", () => currentPlayer.ScoreProcessor.TotalScore.Value, () => Is.EqualTo(1_000_000));
+            AddAssert("score is correct", () => currentPlayer.ScoreProcessor.TotalScore.Value, () => Is.EqualTo(1_000_000 + 100));
         }
 
         private void performTest(List<ManiaHitObject> hitObjects, List<ReplayFrame> frames)

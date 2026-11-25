@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
+using osu.Game.Rulesets.Step.Beatmaps;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

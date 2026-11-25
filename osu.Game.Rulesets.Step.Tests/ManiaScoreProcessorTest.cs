@@ -3,6 +3,9 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Scoring;
+using osu.Game.Scoring;
 
 namespace osu.Game.Rulesets.Step.Tests
 {

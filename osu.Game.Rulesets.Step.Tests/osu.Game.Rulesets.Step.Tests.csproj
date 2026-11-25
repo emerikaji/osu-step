@@ -11,4 +11,7 @@
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\osu.Game.Rulesets.Step\osu.Game.Rulesets.Step.csproj"/>
   </ItemGroup>
+<ItemGroup>
+    <EmbeddedResource Include="Resources\**" />
+</ItemGroup>
 </Project>

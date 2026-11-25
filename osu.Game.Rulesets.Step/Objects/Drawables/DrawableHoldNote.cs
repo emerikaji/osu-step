@@ -37,7 +37,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
         public IBindable<bool> IsHolding => isHolding;
 
         protected double? ReleaseTime;
-        private const double rehold_grace_period = 250; // ms
+        public const double REHOLD_GRACE_PERIOD = 250; // ms
 
         private readonly Bindable<bool> isHolding = new Bindable<bool>();
 
@@ -106,7 +106,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
                     }
                 },
                 bodyContainer = new Container<DrawableHoldNoteBody> { RelativeSizeAxes = Axes.Both },
-                bodyPiece = new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.HoldNoteBody), _ => new DefaultBodyPiece
+                bodyPiece = new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.HoldNoteBody), _ => new DefaultBodyPiece
                 {
                     RelativeSizeAxes = Axes.Both,
                 })
@@ -236,7 +236,7 @@ namespace osu.Game.Rulesets.Step.Objects.Drawables
 
             isHolding.Value = Result.IsHolding(Time.Current);
 
-            if (ReleaseTime != null && !Body.AllJudged && Time.Current - ReleaseTime.Value > rehold_grace_period)
+            if (ReleaseTime != null && !Body.AllJudged && Time.Current - ReleaseTime.Value > REHOLD_GRACE_PERIOD)
             {
                 Body.TriggerResult(false);
                 Tail.UpdateResult();

@@ -3,6 +3,17 @@
 
 using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Shapes;
+using osu.Framework.Testing;
+using osu.Framework.Utils;
+using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.Timing;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.UI;
+using osu.Game.Tests.Visual;
 
 namespace osu.Game.Rulesets.Step.Tests.Mods
 {

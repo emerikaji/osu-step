@@ -22,7 +22,7 @@ namespace osu.Game.Rulesets.Step.Mods
 
         public void ApplyToBeatmapConverter(IBeatmapConverter beatmapConverter)
         {
-            var mbc = (ManiaBeatmapConverter)beatmapConverter;
+            var mbc = (StepBeatmapConverter)beatmapConverter;
 
             isForCurrentRuleset = mbc.IsForCurrentRuleset;
 

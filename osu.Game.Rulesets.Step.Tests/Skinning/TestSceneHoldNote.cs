@@ -2,7 +2,14 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Bindables;
+using osu.Framework.Testing;
+using osu.Game.Beatmaps;
+using osu.Game.Beatmaps.ControlPoints;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Objects.Drawables;
 
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {

@@ -3,6 +3,9 @@
 
 using System;
 using NUnit.Framework;
+using osu.Game.Beatmaps.Legacy;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Tests.Beatmaps;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -15,7 +18,7 @@ namespace osu.Game.Rulesets.Step.Tests
             new object[] { LegacyMods.Easy, new[] { typeof(ManiaModEasy) } },
             new object[] { LegacyMods.Hidden, new[] { typeof(ManiaModHidden) } },
             new object[] { LegacyMods.HardRock, new[] { typeof(ManiaModHardRock) } },
-            new object[] { LegacyMods.SuddenDeath, new[] { typeof(ManiaModSuddenDeath) } },
+            new object[] { LegacyMods.SuddenDeath, new[] { typeof(StepModSuddenDeath) } },
             new object[] { LegacyMods.DoubleTime, new[] { typeof(ManiaModDoubleTime) } },
             new object[] { LegacyMods.HalfTime, new[] { typeof(ManiaModHalfTime) } },
             new object[] { LegacyMods.Flashlight, new[] { typeof(ManiaModFlashlight) } },
@@ -42,14 +45,14 @@ namespace osu.Game.Rulesets.Step.Tests
         [TestCase(LegacyMods.Cinema | LegacyMods.Autoplay, new[] { typeof(ManiaModCinema) })]
         [TestCase(LegacyMods.Nightcore, new[] { typeof(ManiaModNightcore) })]
         [TestCase(LegacyMods.Nightcore | LegacyMods.DoubleTime, new[] { typeof(ManiaModNightcore) })]
-        [TestCase(LegacyMods.Perfect, new[] { typeof(ManiaModPerfect) })]
-        [TestCase(LegacyMods.Perfect | LegacyMods.SuddenDeath, new[] { typeof(ManiaModPerfect) })]
+        [TestCase(LegacyMods.Perfect, new[] { typeof(StepModPerfect) })]
+        [TestCase(LegacyMods.Perfect | LegacyMods.SuddenDeath, new[] { typeof(StepModPerfect) })]
         public new void TestFromLegacy(LegacyMods legacyMods, Type[] expectedMods) => base.TestFromLegacy(legacyMods, expectedMods);
 
         [TestCaseSource(nameof(mania_mod_mapping))]
         [TestCase(LegacyMods.Cinema | LegacyMods.Autoplay, new[] { typeof(ManiaModCinema) })]
         [TestCase(LegacyMods.Nightcore | LegacyMods.DoubleTime, new[] { typeof(ManiaModNightcore) })]
-        [TestCase(LegacyMods.Perfect | LegacyMods.SuddenDeath, new[] { typeof(ManiaModPerfect) })]
+        [TestCase(LegacyMods.Perfect | LegacyMods.SuddenDeath, new[] { typeof(StepModPerfect) })]
         public new void TestToLegacy(LegacyMods legacyMods, Type[] givenMods) => base.TestToLegacy(legacyMods, givenMods);
 
         protected override Ruleset CreateRuleset() => new StepRuleset();

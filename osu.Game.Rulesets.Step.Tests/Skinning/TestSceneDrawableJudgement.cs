@@ -3,6 +3,15 @@
 
 using System;
 using System.Linq;
+using osu.Framework.Extensions;
+using osu.Framework.Graphics;
+using osu.Framework.Testing;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Scoring;
+using osu.Game.Rulesets.Step.Skinning.Legacy;
+using osu.Game.Rulesets.Step.UI;
 
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {

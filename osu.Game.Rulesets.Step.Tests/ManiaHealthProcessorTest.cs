@@ -2,6 +2,10 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using NUnit.Framework;
+using osu.Game.Rulesets.Judgements;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.Scoring;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -12,7 +16,7 @@ namespace osu.Game.Rulesets.Step.Tests
         public void TestNoDrain()
         {
             var processor = new ManiaHealthProcessor(0);
-            processor.ApplyBeatmap(new ManiaBeatmap(new StageDefinition(4))
+            processor.ApplyBeatmap(new StepBeatmap(new StageDefinition(4))
             {
                 HitObjects =
                 {
@@ -30,7 +34,7 @@ namespace osu.Game.Rulesets.Step.Tests
             // hitobject, starting HP, fail expected after miss
             [new Note(), 0.01, true],
             [new HeadNote(), 0.01, true],
-            [new TailNote(), 0.01, true],
+            [new TailNote(), 0.01, false],
             [new HoldNoteBody(), 0, true], // hold note break
             [new HoldNote(), 0, true],
         ];
@@ -39,7 +43,7 @@ namespace osu.Game.Rulesets.Step.Tests
         public void TestFailAfterMinResult(ManiaHitObject hitObject, double startingHealth, bool failExpected)
         {
             var healthProcessor = new ManiaHealthProcessor(0);
-            healthProcessor.ApplyBeatmap(new ManiaBeatmap(new StageDefinition(4))
+            healthProcessor.ApplyBeatmap(new StepBeatmap(new StageDefinition(4))
             {
                 HitObjects = { hitObject }
             });
@@ -56,7 +60,7 @@ namespace osu.Game.Rulesets.Step.Tests
         public void TestNoFailAfterMaxResult(ManiaHitObject hitObject, double startingHealth, bool _)
         {
             var healthProcessor = new ManiaHealthProcessor(0);
-            healthProcessor.ApplyBeatmap(new ManiaBeatmap(new StageDefinition(4))
+            healthProcessor.ApplyBeatmap(new StepBeatmap(new StageDefinition(4))
             {
                 HitObjects = { hitObject }
             });

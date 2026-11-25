@@ -1,6 +1,13 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Allocation;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Game.Rulesets.Step.UI.Components;
+using osu.Game.Skinning;
+using osuTK;
+
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {
     public partial class TestSceneColumnBackground : ManiaSkinnableTestScene
@@ -21,7 +28,7 @@ namespace osu.Game.Rulesets.Step.Tests.Skinning
                     {
                         RelativeSizeAxes = Axes.Both,
                         Width = 0.5f,
-                        Child = new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.ColumnBackground), _ => new DefaultColumnBackground())
+                        Child = new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.ColumnBackground), _ => new DefaultColumnBackground())
                         {
                             RelativeSizeAxes = Axes.Both
                         }
@@ -30,7 +37,7 @@ namespace osu.Game.Rulesets.Step.Tests.Skinning
                     {
                         RelativeSizeAxes = Axes.Both,
                         Width = 0.5f,
-                        Child = new SkinnableDrawable(new ManiaSkinComponentLookup(ManiaSkinComponents.ColumnBackground), _ => new DefaultColumnBackground())
+                        Child = new SkinnableDrawable(new StepSkinComponentLookup(StepSkinComponents.ColumnBackground), _ => new DefaultColumnBackground())
                         {
                             RelativeSizeAxes = Axes.Both
                         }

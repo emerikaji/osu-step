@@ -7,13 +7,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using osu.Framework.Utils;
+using osu.Game.Audio;
+using osu.Game.Rulesets.Objects;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Tests.Beatmaps;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
     [TestFixture]
     public class ManiaBeatmapSampleConversionTest : BeatmapConversionTest<ConvertMapping<SampleConvertValue>, SampleConvertValue>
     {
-        protected override string ResourceAssembly => "osu.Game.Rulesets.Mania.Tests";
+        protected override string ResourceAssembly => "osu.Game.Rulesets.Step.Tests";
 
         [TestCase("convert-samples")]
         [TestCase("mania-samples")]

@@ -3,6 +3,13 @@
 
 using System;
 using NUnit.Framework;
+using osu.Framework.Utils;
+using osu.Game.Beatmaps;
+using osu.Game.Rulesets.Mods;
+using osu.Game.Rulesets.Scoring;
+using osu.Game.Rulesets.Step.Mods;
+using osu.Game.Scoring;
+using osu.Game.Tests.Rulesets;
 
 namespace osu.Game.Rulesets.Step.Tests
 {
@@ -44,15 +51,13 @@ namespace osu.Game.Rulesets.Step.Tests
             [new Mod[] { new ManiaModDaycore { SpeedChange = { Value = 0.95 } } }, 0.5],
             [new Mod[] { new ManiaModDaycore { SpeedChange = { Value = 0.99 } } }, 0.5],
 
-            [new Mod[] { new ManiaModNoRelease() }, 0.9],
-
             #endregion
 
             #region Difficulty Increase
 
             [new Mod[] { new ManiaModHardRock() }, 1],
-            [new Mod[] { new ManiaModSuddenDeath() }, 1],
-            [new Mod[] { new ManiaModPerfect() }, 1],
+            [new Mod[] { new StepModSuddenDeath() }, 1],
+            [new Mod[] { new StepModPerfect() }, 1],
 
             [new Mod[] { new ManiaModDoubleTime { SpeedChange = { Value = 1.01 } } }, 1],
             [new Mod[] { new ManiaModDoubleTime { SpeedChange = { Value = 1.05 } } }, 1],
@@ -116,7 +121,7 @@ namespace osu.Game.Rulesets.Step.Tests
             [new Mod[] { new ManiaModClassic() }, 1],
             [new Mod[] { new ManiaModInvert() }, 1],
             [new Mod[] { new ManiaModConstantSpeed() }, 0.9],
-            [new Mod[] { new ManiaModHoldOff() }, 0.9],
+            [new Mod[] { new StepModHoldOff() }, 0.9],
             [new Mod[] { new ManiaModKey1() }, 0.9],
             [new Mod[] { new ManiaModKey2() }, 0.9],
             [new Mod[] { new ManiaModKey3() }, 0.9],

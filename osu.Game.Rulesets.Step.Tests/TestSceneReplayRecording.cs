@@ -23,7 +23,7 @@ namespace osu.Game.Rulesets.Step.Tests
         [Resolved]
         private AudioManager audioManager { get; set; } = null!;
 
-        protected override IBeatmap CreateBeatmap(RulesetInfo ruleset) => new ManiaBeatmap(new StageDefinition(1))
+        protected override IBeatmap CreateBeatmap(RulesetInfo ruleset) => new StepBeatmap(new StageDefinition(1))
         {
             HitObjects =
             {

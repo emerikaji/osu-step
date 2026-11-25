@@ -3,6 +3,9 @@
 
 using System.Collections.Generic;
 using NUnit.Framework;
+using osu.Game.Rulesets.Step.Beatmaps;
+using osu.Game.Rulesets.Step.Objects;
+using osu.Game.Rulesets.Step.UI;
 
 namespace osu.Game.Rulesets.Step.Tests.Skinning
 {

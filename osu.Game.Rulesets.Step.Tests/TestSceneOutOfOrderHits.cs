@@ -95,7 +95,7 @@ namespace osu.Game.Rulesets.Step.Tests
                 new HoldNote
                 {
                     StartTime = 1020,
-                    EndTime = 1030
+                    EndTime = 1100,
                 }
             };
 
@@ -104,18 +104,18 @@ namespace osu.Game.Rulesets.Step.Tests
                 new ManiaReplayFrame(1000, ManiaAction.Key1),
                 new ManiaReplayFrame(1030),
                 new ManiaReplayFrame(1040, ManiaAction.Key1),
-                new ManiaReplayFrame(1050)
+                new ManiaReplayFrame(1100)
             };
 
             performTest(objects, frames);
 
             addJudgementAssert(objects[0], HitResult.IgnoreHit);
             addJudgementAssert("first head", () => ((HoldNote)objects[0]).Head, HitResult.Perfect);
-            addJudgementAssert("first tail", () => ((HoldNote)objects[0]).Tail, HitResult.Perfect);
+            addJudgementAssert("first tail", () => ((HoldNote)objects[0]).Tail, HitResult.LargeBonus);
 
             addJudgementAssert(objects[1], HitResult.IgnoreHit);
             addJudgementAssert("second head", () => ((HoldNote)objects[1]).Head, HitResult.Great);
-            addJudgementAssert("second tail", () => ((HoldNote)objects[1]).Tail, HitResult.Perfect);
+            addJudgementAssert("second tail", () => ((HoldNote)objects[1]).Tail, HitResult.LargeBonus);
         }
 
         private void addJudgementAssert(ManiaHitObject hitObject, HitResult result)
@@ -143,7 +143,7 @@ namespace osu.Game.Rulesets.Step.Tests
         {
             AddStep("load player", () =>
             {
-                Beatmap.Value = CreateWorkingBeatmap(new ManiaBeatmap(new StageDefinition(4))
+                Beatmap.Value = CreateWorkingBeatmap(new StepBeatmap(new StageDefinition(4))
                 {
                     HitObjects = hitObjects,
                     BeatmapInfo =
