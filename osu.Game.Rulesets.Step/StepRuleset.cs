@@ -7,6 +7,7 @@ using System.Linq;
 using osu.Framework.Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Localisation;
@@ -39,6 +40,7 @@ using osu.Game.Scoring;
 using osu.Game.Screens.Ranking.Statistics;
 using osu.Game.Skinning;
 using osuTK;
+using osuTK.Graphics;
 
 namespace osu.Game.Rulesets.Step
 {
@@ -310,7 +312,30 @@ namespace osu.Game.Rulesets.Step
 
         public override string PlayingVerb => "Stepping keys";
 
-        public override Drawable CreateIcon() => new SpriteIcon { Icon = OsuIcon.RulesetMania };
+        public override Drawable CreateIcon() => new CircularContainer
+        {
+            Size = new Vector2(20),
+            Masking = true,
+            BorderColour = Color4.White,
+            BorderThickness = 2.2f,
+            Children = new Drawable[]
+            {
+                new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Alpha = 0,
+                    AlwaysPresent = true,
+                },
+                new SpriteIcon
+                {
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Icon = FontAwesome.Solid.ArrowUp,
+                    Size = new Vector2(12),
+                    Rotation = 45,
+                }
+            }
+        };
 
         public override DifficultyCalculator CreateDifficultyCalculator(IWorkingBeatmap beatmap) => new StepDifficultyCalculator(RulesetInfo, beatmap);
 
